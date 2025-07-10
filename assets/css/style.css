@@ -1,0 +1,59 @@
+/* assets/css/style.css */
+
+/* Definições de fonte e cor de fundo para o corpo do documento */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #F8FAFC; /* Um tom de cinza claro, quase branco */
+    color: #1E293B; /* Um tom de cinza escuro para o texto principal */
+}
+
+/* Estilo para o container do gráfico, garantindo responsividade */
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px; /* Limite de largura para o gráfico */
+    margin-left: auto;
+    margin-right: auto;
+    height: 350px; /* Altura padrão */
+    max-height: 400px; /* Altura máxima */
+}
+
+/* Ajuste de altura para o container do gráfico em telas maiores (md e acima) */
+@media (min-width: 768px) {
+    .chart-container {
+        height: 400px;
+    }
+}
+
+/* Estilo para os links de navegação com transição suave */
+.nav-link {
+    transition: color 0.3s, border-bottom-color 0.3s;
+}
+
+/* Estilos ao passar o mouse ou quando o link está ativo */
+.nav-link:hover, .nav-link.active {
+    color: #2563EB; /* Azul vibrante */
+    border-bottom-color: #2563EB; /* Borda azul para indicar seleção */
+}
+
+/* Estilo para os cartões gerais com transição para efeitos de hover */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Efeito de levantamento e sombra ao passar o mouse nos cartões */
+.card:hover {
+    transform: translateY(-5px); /* Desloca o cartão para cima */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* Sombra mais pronunciada */
+}
+
+/* Estilo para os cartões de proposta de valor */
+.value-card {
+    border: 2px solid transparent; /* Borda transparente por padrão */
+    transition: border-color 0.3s ease, background-color 0.3s ease; /* Transição suave para a borda e fundo */
+}
+
+/* Melhoria visual para a rolagem: adiciona um efeito suave de "snap" */
+html {
+    scroll-behavior: smooth;
+}
