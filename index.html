@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpeg" href="/Imagem2.jpg">
+    <title>Zart Advisory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Neutral & Tech Blue -->
+    <!-- Application Structure Plan: A SPA (Single-Page Application) com navegação superior fixa que ancora para seções distintas, facilitando a exploração não-linear. A estrutura abandona o layout rígido do canvas tradicional em favor de uma narrativa mais fluida: começa com a Proposta de Valor (o núcleo), seguida pela Estrutura Operacional (como é feito), Clientes e Mercado (para quem é feito), e finaliza com os Fundamentos Financeiros. Esta abordagem foi escolhida para melhorar a usabilidade e a compreensão, guiando o usuário do "porquê" para o "como" e "para quem", o que é mais intuitivo do que analisar três colunas paralelas simultaneamente. As interações (hover e clique) em cartões promovem o engajamento e a descoberta gradual da informação. -->
+    <!-- Visualization & Content Choices: Proposta de Valor: Apresentada como cartões interativos para conectar visualmente o problema à solução. Clientes e Mercado: Um gráfico de barras horizontais (Chart.js/Canvas) foi usado para dar uma dimensão visual comparativa aos Segmentos de Clientes, mesmo com dados qualitativos (usando um "nível de foco" ilustrativo). Isso transforma uma lista estática em um insight visual rápido. Estrutura e Fundamentos: Listas e cartões estruturados com Tailwind CSS para clareza e organização. A escolha desses métodos visa a máxima clareza e engajamento sem sobrecarregar o usuário, transformando o texto denso do relatório em blocos de informação facilmente digeríveis. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC; 
+            color: #1E293B;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #2563EB;
+            border-bottom-color: #2563EB;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .value-card {
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-slate-800">
+                <img src="/Imagem2.jpg" alt="Logo Zart Advisory" class="inline-block h-8 md:h-10 mr-3 align-middle">
+                <span class="text-blue-600">Zart Advisory</span>
+            </h1>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#value-prop" class="nav-link font-medium text-slate-600 border-b-2 border-transparent pb-1">Proposta de Valor</a>
+                <a href="#operations" class="nav-link font-medium text-slate-600 border-b-2 border-transparent pb-1">Operações</a>
+                <a href="#market" class="nav-link font-medium text-slate-600 border-b-2 border-transparent pb-1">Mercado</a>
+                <a href="#financials" class="nav-link font-medium text-slate-600 border-b-2 border-transparent pb-1">Finanças</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-slate-600 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <a href="#value-prop" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">Proposta de Valor</a>
+            <a href="#operations" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">Operações</a>
+            <a href="#market" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">Mercado</a>
+            <a href="#financials" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">Finanças</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-12">
+
+        <section id="intro" class="text-center mb-16 md:mb-24">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-slate-900">Consultoria de Tecnologia e Transformação Digital</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-600">
+                Nosso objetivo é ajudar empresas a navegar pelo cenário tecnológico, implementando soluções que geram crescimento, eficiência e inovação.
+            </p>
+        </section>
+
+        <section id="value-prop" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900 mb-2">Proposta de Valor</h3>
+                <p class="max-w-2xl mx-auto text-slate-600">O núcleo do nosso negócio: os problemas que resolvemos e as soluções que oferecemos. </p>
+            </div>
+            <div id="value-proposition-grid" class="grid md:grid-cols-2 gap-8">
+            </div>
+        </section>
+
+        <section id="operations" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900 mb-2">Estrutura Operacional</h3>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div id="key-activities" class="bg-white p-6 rounded-lg shadow-md card"></div>
+                <div id="key-resources" class="bg-white p-6 rounded-lg shadow-md card"></div>
+                <div id="key-partners" class="bg-white p-6 rounded-lg shadow-md card"></div>
+            </div>
+        </section>
+
+        <section id="market" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900 mb-2">Clientes e Mercado</h3>
+                <p class="max-w-2xl mx-auto text-slate-600">Para quem entregamos valor e como nos conectamos com eles. Segmentos de clientes, canais de comunicação e as formas como construímos relacionamentos sólidos.</p>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-md mb-8">
+                <h4 class="text-xl font-bold text-slate-800 mb-1">Segmentos de Clientes</h4>
+                <p class="text-slate-500 mb-6">Nível de Foco Ilustrativo</p>
+                <div class="chart-container">
+                    <canvas id="customerSegmentsChart"></canvas>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 mt-8">
+                <div id="channels" class="bg-white p-6 rounded-lg shadow-md card"></div>
+                <div id="customer-relationships" class="bg-white p-6 rounded-lg shadow-md card"></div>
+            </div>
+        </section>
+        
+        <section id="financials" class="scroll-mt-20">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900 mb-2">Fundamentos Financeiros</h3>
+                <p class="max-w-2xl mx-auto text-slate-600">A base financeira do nosso modelo de negócio. Estrutura de custos e nossas principais fontes de receita, garantindo a sustentabilidade e o crescimento da consultoria.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md card">
+                    <h4 class="text-2xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="text-red-500 mr-3">▼</span> Estrutura de Custos
+                    </h4>
+                    <ul id="cost-structure" class="space-y-3 text-slate-600"></ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card">
+                     <h4 class="text-2xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="text-green-500 mr-3">▲</span> Fontes de Receita
+                    </h4>
+                    <ul id="revenue-streams" class="space-y-3 text-slate-600"></ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-16 md:mt-24">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 Zart Advisory. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = {
+                valuePropositions: [
+                    { 
+                        problem: 'Dificuldade de inserção do "digital" no modelo de negócios e falta de modelos eficazes.',
+                        solution: 'Consultoria especializada e desenvolvimento de soluções tecnológicas personalizadas que digitalizam, otimizam e alavancam a produtividade dos negócios, com análise do modelo de negócios para real eficácia.'
+                    },
+                    {
+                        problem: 'Uso equivocado de mídias sociais (não conseguem alavancar sua produtividade).',
+                        solution: 'Implementação de sistemas e estratégias que integram tecnologias e mídias sociais de forma produtiva, através da modelagem de campanhas e processos que alavancam a demanda da empresa.'
+                    },
+                    {
+                        problem: 'Incapacidade de lidar com a demanda de campanhas e projetos.',
+                        solution: 'Desenvolvimento de sistemas e automações que escalam a capacidade operacional, permitindo gerenciar maior volume de demandas com eficiência.'
+                    },
+                    {
+                        problem: 'Falta de informação sobre as novas tendências tecnológicas.',
+                        solution: 'Promoção de workshops e eventos que visam a disseminação das novas ferramentas e como usá-las, e desenvolvimento de projetos que incorporam as tecnologias mais avançadas e relevantes para o mercado.'
+                    },
+                    {
+                        problem: 'Necessidade de melhoria em sistemas e operações existentes.',
+                        solution: 'Análise e implementação de projetos de transformação digital que modernizam e aprimoram a infraestrutura e os processos tecnológicos dos clientes.'
+                    }
+                ],
+                keyActivities: {
+                    title: 'Atividades Chave',
+                    icon: '⚙️',
+                    items: [
+                        'Desenvolvimento de Tecnologia (Sistemas, Sites, Apps)',
+                        'Levantamento de Requisitos e Análise de Negócio',
+                        'Gestão e Acompanhamento de Projetos',
+                        'Pesquisa e Desenvolvimento (P&D) de inovações e ferramentas',
+                        'Educação e Promoção através de Workshops'
+                    ]
+                },
+                keyResources: {
+                    title: 'Recursos Chave',
+                    icon: '💡',
+                    items: [
+                        'Capital Humano Qualificado (DEVs, POs)',
+                        'Plataforma Digital e Portfólio Online',
+                        'Ferramentas e Tecnologias de Ponta',
+                        'Conhecimento e Metodologias Ágeis'
+                    ]
+                },
+                keyPartners: {
+                    title: 'Parceiros Chave',
+                    icon: '🤝',
+                    items: [
+                        'Especialistas em Marketing e Publicidade',
+                        'Provedores de Infraestrutura de TI e Cloud',
+                        'Parceiros de Ferramentas e Plataformas',
+                        'Instituições de Ensino/Treinamento'
+                    ]
+                },
+                customerSegments: {
+                    labels: ['PMEs', 'Empresas em Alavancagem Digital', 'Negócios Tradicionais em Transição', 'Inovadores e Visionários'],
+                    data: [75, 90, 85, 60]
+                },
+                channels: {
+                    title: 'Canais',
+                    icon: '📢',
+                    items: [
+                        'Plataforma Online (Site/Blog)',
+                        'Workshops e Eventos (Online/Presenciais, incluindo teleconferências)',
+                        'Mídias Sociais e Marketing Digital',
+                        'Parcerias Estratégicas e Indicações'
+                    ]
+                },
+                customerRelationships: {
+                    title: 'Relacionamento com Clientes',
+                    icon: '❤️',
+                    items: [
+                        'Consultoria Personalizada e Atendimento Direto',
+                        'Comunicação Ativa e Acompanhamento Contínuo',
+                        'Educação e Capacitação (Workshops)',
+                        'Demonstrações e Cases de Sucesso',
+                        'Networking em Eventos do Setor'
+                    ]
+                },
+                 costStructure: [
+                    'Salários e encargos da equipe qualificada',
+                    'Licenças de Software e Ferramentas de Desenvolvimento',
+                    'Custos de Infraestrutura (Cloud, Hospedagem)',
+                    'Investimento em Marketing e Vendas',
+                    'Custos para realização de eventos e workshops'
+                ],
+                revenueStreams: [
+                    'Taxas por projeto de desenvolvimento de software',
+                    'Contratos de consultoria e assessoria (mensal ou por escopo)',
+                    'Receita de workshops e treinamentos pagos',
+                    'Contratos de manutenção e suporte contínuo',
+                    'Modelos de assinatura (SaaS) para soluções próprias'
+                ]
+            };
+            
+            function populateValuePropositions() {
+                const grid = document.getElementById('value-proposition-grid');
+                grid.innerHTML = '';
+                data.valuePropositions.forEach((vp, index) => {
+                    const problemId = `problem-${index}`;
+                    const solutionId = `solution-${index}`;
+                    
+                    const problemCard = document.createElement('div');
+                    problemCard.id = problemId;
+                    problemCard.className = 'bg-white p-6 rounded-lg shadow-md value-card cursor-pointer';
+                    problemCard.innerHTML = `
+                        <h4 class="font-bold text-lg text-rose-600 mb-2">Problema</h4>
+                        <p class="text-slate-600">${vp.problem}</p>
+                    `;
+
+                    const solutionCard = document.createElement('div');
+                    solutionCard.id = solutionId;
+                    solutionCard.className = 'bg-white p-6 rounded-lg shadow-md value-card';
+                    solutionCard.innerHTML = `
+                        <h4 class="font-bold text-lg text-emerald-600 mb-2">Solução</h4>
+                        <p class="text-slate-600">${vp.solution}</p>
+                    `;
+
+                    problemCard.addEventListener('mouseenter', () => {
+                        document.getElementById(solutionId).style.borderColor = '#10B981';
+                        document.getElementById(solutionId).style.backgroundColor = '#F0FDF4';
+                    });
+                    problemCard.addEventListener('mouseleave', () => {
+                        document.getElementById(solutionId).style.borderColor = 'transparent';
+                        document.getElementById(solutionId).style.backgroundColor = 'white';
+                    });
+
+                    grid.appendChild(problemCard);
+                    grid.appendChild(solutionCard);
+                });
+            }
+
+            function populateList(elementId, content) {
+                const container = document.getElementById(elementId);
+                let listItems = content.items.map(item => `<li class="flex items-start"><span class="mr-2 text-blue-500">▪</span><span>${item}</span></li>`).join('');
+                container.innerHTML = `
+                    <h4 class="text-2xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="text-2xl mr-3">${content.icon}</span> ${content.title}
+                    </h4>
+                    <ul class="space-y-3 text-slate-600">${listItems}</ul>
+                `;
+            }
+            
+            function populateSimpleList(elementId, items) {
+                const container = document.getElementById(elementId);
+                container.innerHTML = items.map(item => `<li class="flex items-start"><span class="mr-2 text-slate-400">▪</span><span>${item}</span></li>`).join('');
+            }
+
+            populateValuePropositions();
+            populateList('key-activities', data.keyActivities);
+            populateList('key-resources', data.keyResources);
+            populateList('key-partners', data.keyPartners);
+            populateList('channels', data.channels);
+            populateList('customer-relationships', data.customerRelationships);
+            populateSimpleList('cost-structure', data.costStructure);
+            populateSimpleList('revenue-streams', data.revenueStreams);
+
+            const ctx = document.getElementById('customerSegmentsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.customerSegments.labels.map(label => label.split(' ')),
+                    datasets: [{
+                        label: 'Nível de Foco',
+                        data: data.customerSegments.data,
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(16, 185, 129, 0.7)',
+                            'rgba(249, 115, 22, 0.7)',
+                            'rgba(139, 92, 246, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(59, 130, 246)',
+                            'rgb(16, 185, 129)',
+                            'rgb(249, 115, 22)',
+                            'rgb(139, 92, 246)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Foco: ${context.raw}%`;
+                                },
+                                title: function(context) {
+                                    return context[0].label.replace(/,/g, ' ');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                             max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + "%"
+                                }
+                            }
+                        },
+                        y: {
+                           ticks: {
+                                autoSkip: false,
+                           }
+                        }
+                    }
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
